@@ -67,9 +67,7 @@ func (g *Game) PlayRound() bool {
 	g.DisplayChan <- "-----------------"
 	fmt.Print("Please enter rock, paper, or scissors ->")
 	playerChoice, _ := reader.ReadString('\n')
-
-	playerChoice = strings.Replace(playerChoice, "\n", "", -1)
-	playerChoice = strings.Replace(playerChoice, "\r", "", -1)
+	playerChoice = strings.TrimSpace(playerChoice)
 
 	computerValue := rand.Intn(3)
 
@@ -103,32 +101,19 @@ func (g *Game) PlayRound() bool {
 	} else {
 		switch playerValue {
 		case ROCK:
-			if computerValue == PAPER {
-				g.ComputerWins()
-			} else {
-				g.PlayersWins()
-			}
+			g.whoIsWinner(computerValue, PAPER)
 			break
 		case PAPER:
-			if computerValue == SCISSORS {
-				g.ComputerWins()
-			} else {
-				g.PlayersWins()
-			}
+			g.whoIsWinner(computerValue, SCISSORS)
 			break
 		case SCISSORS:
-			if computerValue == ROCK {
-				g.ComputerWins()
-			} else {
-				g.PlayersWins()
-			}
+			g.whoIsWinner(computerValue, ROCK)
 			break
 		default:
 			g.DisplayChan <- "Invalid chose"
 			return false
 		}
 	}
-
 	return true
 
 }
@@ -152,5 +137,13 @@ func (g *Game) PrintSummary() {
 		g.DisplayChan <- "Player wins game!"
 	} else {
 		g.DisplayChan <- "Computer wins game!"
+	}
+}
+
+func (g *Game) whoIsWinner(computerValue, inVal int) {
+	if computerValue == inVal {
+		g.ComputerWins()
+	} else {
+		g.PlayersWins()
 	}
 }
